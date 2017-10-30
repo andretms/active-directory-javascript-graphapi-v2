@@ -1,4 +1,5 @@
-﻿// Initialize application
+﻿// <sign-in>
+// Initialize application
 var userAgentApplication = new Msal.UserAgentApplication(msalconfig.clientID, null, loginCallback, {
     redirectUri: msalconfig.redirectUri
 });
@@ -49,6 +50,21 @@ function updateUI() {
     }
 }
 
+/**
+ * Callback method from sign-in: if no errors, call callGraphApi() to show results.
+ * @param {string} errorDesc - If error occur, the error message
+ * @param {object} token - The token received from login
+ * @param {object} error - The error 
+ * @param {string} tokenType - the token type: usually id_token
+ */
+function loginCallback(errorDesc, token, error, tokenType) {
+    if (errorDesc) {
+        showError(msal.authority, error, errorDesc);
+    } else {
+        updateUI();
+    }
+}
+
 function signIn() {
     var user = userAgentApplication.getUser();
     // If user is not signed in, then prompt user to sign in via loginRedirect.
@@ -60,6 +76,9 @@ function signIn() {
     }
 }
 
+// </sign-in>
+
+// <callgraph>
 /**
  * Call the Microsoft Graph API and display the results on the page
  */
@@ -118,22 +137,9 @@ function showError(endpoint, error, errorDesc) {
     document.getElementById("errorMessage").innerHTML = "An error has occurred:<br/>Endpoint: " + endpoint + "<br/>Error: " + formattedError + "<br/>" + errorDesc;
     console.error(error);
 }
+// </callgraph>
 
-/**
- * Callback method from sign-in: if no errors, call callGraphApi() to show results.
- * @param {string} errorDesc - If error occur, the error message
- * @param {object} token - The token received from login
- * @param {object} error - The error 
- * @param {string} tokenType - the token type: usually id_token
- */
-function loginCallback(errorDesc, token, error, tokenType) {
-    if (errorDesc) {
-        showError(msal.authority, error, errorDesc);
-    } else {
-        updateUI();
-    }
-}
-
+// <callwebapi>
 /**
  * Call a Web API using an access token.
  * 
@@ -183,8 +189,9 @@ function callWebApiWithToken(endpoint, token, responseElement, showTokenElement)
             showError(endpoint, error);
         });
 }
+// </callwebapi>
 
-
+// <sign-out>
 /**
  * Sign-out the user
  */
@@ -193,3 +200,4 @@ function signOut() {
         updateUI();
     });
 }
+// </sign-out>
