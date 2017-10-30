@@ -1,10 +1,4 @@
-﻿// Graph API endpoint to show user profile
-var graphApiEndpoint = "https://graph.microsoft.com/v1.0/me";
-
-// Graph API scope used to obtain the access token to read user profile
-var graphAPIScopes = ["https://graph.microsoft.com/user.read"];
-
-// Initialize application
+﻿// Initialize application
 var userAgentApplication = new Msal.UserAgentApplication(msalconfig.clientID, null, loginCallback, {
     redirectUri: msalconfig.redirectUri
 });
@@ -17,13 +11,54 @@ if (userAgentApplication.redirectUri) {
 window.onload = function () {
     // If page is refreshed, continue to display user info
     if (!userAgentApplication.isCallback(window.location.hash) && window.parent === window && !window.opener) {
-        var user = userAgentApplication.getUser();
-        if (user) {
-            callGraphApi();
-        }
+        updateUI();
     }
 }
 
+function updateUI() {
+    var user = userAgentApplication.getUser();
+    if (user) {
+
+        // If user is already signed in, display the user info
+        var userInfoElement = document.getElementById("userInfo");
+        userInfoElement.parentElement.classList.remove("hidden");
+        userInfoElement.innerHTML = JSON.stringify(user, null, 4);
+
+        // Hide Sign-in button
+        document.getElementById("signInButton").classList.add("hidden");
+
+        // Show Query Graph API button
+        document.getElementById("callGraphButton").classList.remove("hidden");
+
+        // Show Sign-Out button
+        document.getElementById("signOutButton").classList.remove("hidden");
+
+    } else {
+
+        // Show Sign-in button
+        document.getElementById("signInButton").classList.remove("hidden");
+
+        // Hide User Info
+        document.getElementById("userInfo").parentElement.classList.add("hidden");
+
+        // Hide Query Graph API button
+        document.getElementById("callGraphButton").classList.add("hidden");
+
+        // Hide Sign-Out button
+        document.getElementById("signOutButton").classList.add("hidden");
+    }
+}
+
+function signIn() {
+    var user = userAgentApplication.getUser();
+    // If user is not signed in, then prompt user to sign in via loginRedirect.
+    // This will redirect user to the Azure Active Directory v2 Endpoint
+    if (!user) {
+        userAgentApplication.loginPopup().then(function(idToken) {
+            updateUI();
+        });
+    }
+}
 
 /**
  * Call the Microsoft Graph API and display the results on the page
@@ -31,25 +66,16 @@ window.onload = function () {
 function callGraphApi() {
     var user = userAgentApplication.getUser();
     if (!user) {
-        // If user is not signed in, then prompt user to sign in via loginRedirect.
-        // This will redirect user to the Azure Active Directory v2 Endpoint
-        userAgentApplication.loginRedirect(graphAPIScopes);
-
-        // The call to loginRedirect above frontloads the consent to query Graph API during the sign-in.
-        // If you want to use dynamic consent, just remove the graphAPIScopes from loginRedirect call:
-        // As such, user will be prompted to give consent as soon as the token for a resource that 
-        // he/she hasn't consented before is requested. In the case of this application - 
-        // the first time the Graph API call to obtain user's profile is executed.
+        signIn().then(
+            callGraphApi()
+        );
     } else {
+        // Graph API endpoint to show user profile
+        var graphApiEndpoint = "https://graph.microsoft.com/v1.0/me";
 
-        // If user is already signed in, display the user info
-        var userInfoElement = document.getElementById("userInfo");
-        userInfoElement.parentElement.classList.remove("hidden");
-        userInfoElement.innerHTML = JSON.stringify(user, null, 4);
-
-        // Show Sign-Out button
-        document.getElementById("signOutButton").classList.remove("hidden");
-
+        // Graph API scope used to obtain the access token to read user profile
+        var graphApiScopes = ["https://graph.microsoft.com/user.read"];
+        
         // Now Call Graph API to show the user profile information:
         var graphCallResponseElement = document.getElementById("graphResponse");
         graphCallResponseElement.parentElement.classList.remove("hidden");
@@ -57,7 +83,7 @@ function callGraphApi() {
 
         // In order to call the Graph API, an access token needs to be acquired.
         // Try to acquire the token used to Query Graph API silently first
-        userAgentApplication.acquireTokenSilent(graphAPIScopes)
+        userAgentApplication.acquireTokenSilent(graphApiScopes)
             .then(function (token) {
                 //After the access token is acquired, call the Web API, sending the acquired token
                 callWebApiWithToken(graphApiEndpoint, token, graphCallResponseElement, document.getElementById("accessToken"));
@@ -69,8 +95,10 @@ function callGraphApi() {
                 // After authentication/ authorization completes, this page will be reloaded again and callGraphApi() will be called.
                 // Then, acquireTokenSilent will then acquire the token silently, the Graph API call results will be made and results will be displayed in the page.
                 if (error) {
-                    userAgentApplication.acquireTokenRedirect(graphAPIScopes);
-                }
+                    userAgentApplication.acquireTokenPopup(graphApiScopes).then(function(token) {
+                        callWebApiWithToken(graphApiEndpoint, token, graphCallResponseElement, document.getElementById("accessToken"));
+                    });
+                };
             });
 
     }
@@ -102,7 +130,7 @@ function loginCallback(errorDesc, token, error, tokenType) {
     if (errorDesc) {
         showError(msal.authority, error, errorDesc);
     } else {
-        callGraphApi();
+        updateUI();
     }
 }
 
@@ -161,5 +189,7 @@ function callWebApiWithToken(endpoint, token, responseElement, showTokenElement)
  * Sign-out the user
  */
 function signOut() {
-    userAgentApplication.logout();
+    userAgentApplication.logout().then(function() {
+        updateUI();
+    });
 }

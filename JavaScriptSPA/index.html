@@ -6,7 +6,8 @@
     <title>JavaScript SPA Guided Setup</title>
 </head>
 <body style="margin: 40px">
-    <button id="callGraphButton" type="button" class="btn btn-primary" onclick="callGraphApi()">Call Microsoft Graph API</button>
+    <button id="signInButton" type="button" class="btn btn-primary" onclick="signIn()">Sign-In</button>
+    <button id="callGraphButton" type="button" class="btn btn-primary hidden" onclick="callGraphApi()">Call Microsoft Graph API</button>
     <div id="errorMessage" class="text-danger"></div>
     <div class="hidden">
         <h3>Graph API Call Response</h3>
