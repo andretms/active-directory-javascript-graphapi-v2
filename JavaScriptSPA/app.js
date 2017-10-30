@@ -1,4 +1,4 @@
-﻿// <sign-in>
+﻿// <signin>
 // Initialize application
 var userAgentApplication = new Msal.UserAgentApplication(msalconfig.clientID, null, loginCallback, {
     redirectUri: msalconfig.redirectUri
@@ -76,9 +76,9 @@ function signIn() {
     }
 }
 
-// </sign-in>
+// </signin>
 
-// <callgraph>
+// <callmsgraph>
 /**
  * Call the Microsoft Graph API and display the results on the page
  */
@@ -137,7 +137,7 @@ function showError(endpoint, error, errorDesc) {
     document.getElementById("errorMessage").innerHTML = "An error has occurred:<br/>Endpoint: " + endpoint + "<br/>Error: " + formattedError + "<br/>" + errorDesc;
     console.error(error);
 }
-// </callgraph>
+// </callmsgraph>
 
 // <callwebapi>
 /**
