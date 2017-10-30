@@ -189,7 +189,7 @@ function callWebApiWithToken(endpoint, token, responseElement, showTokenElement)
 }
 // </callwebapi>
 
-// <sign-out>
+// <signout>
 /**
  * Sign-out the user
  */
@@ -198,4 +198,4 @@ function signOut() {
         updateUI();
     });
 }
-// </sign-out>
+// </signout>
