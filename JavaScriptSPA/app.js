@@ -25,10 +25,10 @@ function updateUI() {
         document.getElementById("signInButton").classList.add("hidden");
 
         // Show Query Graph API button
-        document.getElementById("callGraphButton").classList.remove("hidden");
+        if (callGraphApi) document.getElementById("callGraphButton").classList.remove("hidden");
 
         // Show Sign-Out button
-        document.getElementById("signOutButton").classList.remove("hidden");
+        if (signOut) document.getElementById("signOutButton").classList.remove("hidden");
 
     } else {
 
