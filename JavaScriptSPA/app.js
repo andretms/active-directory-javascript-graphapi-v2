@@ -1,13 +1,8 @@
-﻿// <signin>
-// Initialize application
+﻿// <initialize>
+// Initialize msal 
 var userAgentApplication = new Msal.UserAgentApplication(msalconfig.clientID, null, loginCallback, {
     redirectUri: msalconfig.redirectUri
 });
-
-//Previous version of msal uses redirect url via a property
-if (userAgentApplication.redirectUri) {
-    userAgentApplication.redirectUri = msalconfig.redirectUri;
-}
 
 window.onload = function () {
     // If page is refreshed, continue to display user info
@@ -16,6 +11,7 @@ window.onload = function () {
     }
 }
 
+// Update the UI in case of changes
 function updateUI() {
     var user = userAgentApplication.getUser();
     if (user) {
@@ -64,7 +60,9 @@ function loginCallback(errorDesc, token, error, tokenType) {
         updateUI();
     }
 }
+// </initialize>
 
+// <signin>
 function signIn() {
     var user = userAgentApplication.getUser();
     // If user is not signed in, then prompt user to sign in via loginRedirect.
