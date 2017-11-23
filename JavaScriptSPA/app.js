@@ -24,12 +24,14 @@ function updateUI() {
         // Hide Sign-in button
         document.getElementById("signInButton").classList.add("hidden");
 
+        //{"branch":["call-graph-api"]}
         // Show Query Graph API button
         if (callGraphApi) document.getElementById("callGraphButton").classList.remove("hidden");
-
+        //{"endbranch":["call-graph-api"]}
+        //{"branch":["sign-out"]}
         // Show Sign-Out button
         if (signOut) document.getElementById("signOutButton").classList.remove("hidden");
-
+        //{"endbranch":["sign-out"]}
     } else {
 
         // Show Sign-in button
@@ -38,11 +40,15 @@ function updateUI() {
         // Hide User Info
         document.getElementById("userInfo").parentElement.classList.add("hidden");
 
+        //{"branch":["call-graph-api"]}
         // Hide Query Graph API button
         document.getElementById("callGraphButton").classList.add("hidden");
+        //{"endbranch":["call-graph-api"]}
 
+        //{"branch":["sign-out"]}
         // Hide Sign-Out button
         document.getElementById("signOutButton").classList.add("hidden");
+        //{"endbranch":["sign-out"]}
     }
 }
 
@@ -76,6 +82,7 @@ function signIn() {
 
 // </signin>
 
+//{"branch":["call-graph-api"]}
 // <callmsgraph>
 /**
  * Call the Microsoft Graph API and display the results on the page
@@ -120,6 +127,7 @@ function callGraphApi() {
 
     }
 }
+//{"endbranch":["call-graph-api"]}
 
 /**
  * Show an error message in the page
@@ -137,6 +145,7 @@ function showError(endpoint, error, errorDesc) {
 }
 // </callmsgraph>
 
+//{"branch":["call-graph-api"]}
 // <callwebapi>
 /**
  * Call a Web API using an access token.
@@ -188,8 +197,9 @@ function callWebApiWithToken(endpoint, token, responseElement, showTokenElement)
         });
 }
 // </callwebapi>
-
+//{"endbranch":["call-graph-api"]}
 // <signout>
+//{"branch":["sign-out"]}
 /**
  * Sign-out the user
  */
@@ -199,3 +209,4 @@ function signOut() {
     });
 }
 // </signout>
+//{"endbranch":["sign-out"]}
