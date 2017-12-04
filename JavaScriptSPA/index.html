@@ -7,11 +7,11 @@
 </head>
 <body style="margin: 40px">
     <button id="signInButton" type="button" class="btn btn-primary" onclick="signIn()">Sign-In</button>
-    <!--!{"branch":["call-graph-api"]}!-->
+    <!--!{"start-branch":["call-graph-api"]}!-->
     <button id="callGraphButton" type="button" class="btn btn-primary hidden" onclick="callGraphApi()">Call Microsoft Graph API</button>
-    <!--!{"endbranch":["call-graph-api"]}!-->
+    <!--!{"end-branch":["call-graph-api"]}!-->
     <div id="errorMessage" class="text-danger"></div>
-    <!--!{"branch":["call-graph-api"]}!-->
+    <!--!{"start-branch":["call-graph-api"]}!-->
     <div class="hidden">
         <h3>Graph API Call Response</h3>
         <pre class="well" id="graphResponse"></pre>
@@ -20,14 +20,14 @@
         <h3>Access Token</h3>
         <pre class="well" id="accessToken"></pre>
     </div>
-    <!--!{"endbranch":["call-graph-api"]}!-->
+    <!--!{"end-branch":["call-graph-api"]}!-->
     <div class="hidden">
         <h3>ID Token Claims</h3>
         <pre class="well" id="userInfo"></pre>
     </div>
-    <!--!{"branch":["sign-out"]}!-->
+    <!--!{"start-branch":["sign-out"]}!-->
     <button id="signOutButton" type="button" class="btn btn-primary hidden" onclick="signOut()">Sign out</button>
-    <!--!{"endbranch":["sign-out"]}!-->
+    <!--!{"end-branch":["sign-out"]}!-->
     <!-- This app uses cdn to reference msal.js (recommended). 
          You can also download it from: https://github.com/AzureAD/microsoft-authentication-library-for-js -->
     <script src="//secure.aadcdn.microsoftonline-p.com/lib/0.1.1/js/msal.min.js"></script>
